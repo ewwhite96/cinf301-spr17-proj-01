@@ -32,13 +32,21 @@ class MonitorManager
 	private function __run()
 	{
 		$file = simplexml_load_file("./" + $xml);
-		foreach($file->connections->connection as $connection)
+		$classes = array();
+		foreach($file->services->services as $service)
 		{
-			if($serviceRef->isInstantiable())
+			$class = "$service->class";
+			$name = $service->name;
+			$frequency = $service->parameters->frequency;
+			$interval = $service->parameters->interval;
+			if($class == "PortMonitorService")
 			{
-				$connect = $serviceRef->getMethod("connect");
-				$instance = new $connection();
-				$connect->invoke($instance);
+				$port = $service->parameters->port; 
+				$serviceRef = new ReflectionClass($class);
+				if($serveiceRef->isInstantiable())
+				{
+					$serve = $serviceRef->
+				} 
 			}
 		} 
 	}

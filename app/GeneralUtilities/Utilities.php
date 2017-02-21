@@ -1,15 +1,15 @@
 <?php
 
-class ParseArgv
+class Utilities
 {
-	global $argv;
+    global $argv;
 
     public function __construct()
     {
         $argv = $argv ? $argv : $_SERVER['argv'];
     }
 
-    public function parse($argv)
+    public function parse($argv = NULL )
     {
 	array_shift($argv);
         $argvs = array();
@@ -35,26 +35,19 @@ class ParseArgv
                 }
                 else if(substr($arg,0,1) == '=')
                 {
-                        if(substr($arg,2,1) == '=')
-                        {
-                                $argvs[substr($arg,1,1)} = substr($arg,3);
-                        }
-                        else
-                        {
-                                foreach(str_split(substr($arg,1))) as $k)
-                                {
-                                        if(!isset($argvs[$k]))
-                                        {
-                                                $argvs[$k] = true;
-                                        }
-                                }
-
-                        }
+                      	$k = substr($arg,1);
+			if(!isset($argvs[$k]))
+			{
+				$argvs[$k] = true;
+				$previous_key = $k;
+			}
                 }
                 else
                 {
-                        $argvs[] = $arg;
+                        $argvs[$previous_key] = $arg;
+			$previous_key = "";
                 }
         }
         return $argvs;
-}
+    }
+}	
