@@ -1,22 +1,35 @@
 <?php
-$host = 'localhost';
-$ports = array(22, 80, 443, 3306);
 
-foreach ($ports as $port)
+class PortServiceMonitor
 {
-    $fh = @fsockopen($host, $port, $errno, $errstr, 5);
+	private $host;
+	private $ports;
+	function __construct($host,$ports)
+	{
+		$host = 'localhost';
+		$ports = array(22, 80, 443, 3306);
+	}
 
-    if (is_resource($fh))
-    {
-        $service = getservbyport($port, 'tcp');
-        echo "$host port:$port service:$service is open.\n";
+	private function __port()
+	{
+		foreach ($ports as $port)
+		{
+			$fh = @fsockopen($host, $port, $errno, $errstr, 5);
 
-        fclose($fh);
-    }
+			if (is_resource($fh))
+			{
+				$service = getservbyport($port, 'tcp');
+				echo "$host port:$port service:$service is open.\n";
 
-    else
-    {
-        echo "Error: $errstr ($errno) for $host:$port\n";
-    }
+				fclose($fh);
+			}
+
+			else
+			{
+				echo "Error: $errstr ($errno) for $host:$port\n";
+			}
+		}
+	}
+
 }
 

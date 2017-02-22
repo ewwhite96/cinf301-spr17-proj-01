@@ -1,21 +1,33 @@
 <?php
-$host = 'localhost';
-$urls = array("http://www.stetson.edu", "http://www.google.com", "http://booboo.boo");
 
-foreach ($urls as $url)
+class WebMonitorService 
 {
-    $fh = @fopen($url, "r");
+	private $host;
+	private $urls;
+	function __construct($host,$urls)
+	{
+		$host = 'localhost';
+		$urls = array("http://www.stetson.edu", "http://www.google.com", "http://booboo.boo");
+	}
 
-    if (is_resource($fh))
-    {
-        echo "$url is open.\n";
+	private function __web()
+	{ 
+		foreach ($urls as $url)
+		{
+			$fh = @fopen($url, "r");
 
-        fclose($fh);
-    }
+			if (is_resource($fh))
+			{
+				echo "$url is open.\n";
 
-    else
-    {
-        echo "Error: $url not responding\n";
-    }
+				fclose($fh);
+			}
+
+			else
+			{
+				echo "Error: $url not responding\n";
+			}
+		}
+	}
 }
 
