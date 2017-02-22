@@ -1,9 +1,9 @@
 # See "https://hub.docker.com/_/centos/" for Centos image
 #
-# Build using "docker build --rm -t local/c7-systemd-httpd-php ."
+# Build using "docker build --rm -t centos ."
 #
 FROM centos:7
-MAINTAINER "Daniel Plante" <dplante@stetson.edu>
+MAINTAINER "Eddie White" <ewwhite@stetson.edu>
 ENV container docker
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
 systemd-tmpfiles-setup.service ] || rm -f $i; done); \
@@ -20,3 +20,8 @@ CMD ["/usr/sbin/init"]
 RUN yum -y install httpd php php-common php-cli; yum clean all; systemctl enable httpd.service
 EXPOSE 80
 CMD ["/usr/sbin/init"]
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"\
+php -r "if (hash_file('SHA384', 'composer-setup.php') === '55d6ead61b29c7bdee5cccfb50076874187bd9f21f65d8991d46ec5cc90518f447387fb9f76ebae1fbbacf329e583e30') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"\
+php composer-setup.php\
+php -r "unlink('composer-setup.php');"
