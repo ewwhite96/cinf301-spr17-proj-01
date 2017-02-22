@@ -1,31 +1,32 @@
 <?php
+require_once "./MonitorService.php";
 
-class PortServiceMonitor extends MonitorService
+class PortMonitorService extends MonitorService
 {
 	private $host;
-	private $ports;
-	function __construct($host,$ports)
+	private $port;
+	function __construct($host='localhost',$port=80)
 	{
-		$host = 'localhost';
-		$ports = array(22, 80, 443, 3306);
+		$this->host = $host;
+		$this->port = $port;
 	}
 
-	private function execute()
+	public function execute()
 	{
 
-		$fh = @fsockopen($host, $port, $errno, $errstr, 5);
+		$fh = @fsockopen($this->host, $this->port, $errno, $errstr, 5);
 
 		if (is_resource($fh))
 		{
-			$service = getservbyport($port, 'tcp');
-			echo "$host port:$port service:$service is open.\n";
+			$service = getservbyport($this->port, 'tcp');
+			echo "$this->host port:$this->port service:$service is open.\n";
 
 			fclose($fh);
 		}
 
 		else
 		{
-			echo "Error: $errstr ($errno) for $host:$port\n";
+			echo "Error: $errstr ($errno) for $this->host:$this->port\n";
 		}
 
 	}

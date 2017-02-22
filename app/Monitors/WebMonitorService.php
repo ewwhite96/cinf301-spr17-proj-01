@@ -1,33 +1,33 @@
 <?php
+require_once "./MonitorService.php"; 
 
-class WebMonitorService 
+class WebMonitorService extends MonitorService
 {
 	private $host;
-	private $urls;
-	function __construct($host,$urls)
+	private $url;
+	function __construct($host='localhost',$url="http://www.stetson.edu")
 	{
-		$host = 'localhost';
-		$urls = array("http://www.stetson.edu", "http://www.google.com", "http://booboo.boo");
+		$this->host = $host;
+		$this->url = $url;
 	}
 
-	private function __web()
+	public function execute()
 	{ 
-		foreach ($urls as $url)
+
+		$fh = @fopen($this->url, "r");
+
+		if (is_resource($fh))
 		{
-			$fh = @fopen($url, "r");
+			echo "$this->url is open.\n";
 
-			if (is_resource($fh))
-			{
-				echo "$url is open.\n";
-
-				fclose($fh);
-			}
-
-			else
-			{
-				echo "Error: $url not responding\n";
-			}
+			fclose($fh);
 		}
+
+		else
+		{
+			echo "Error: $this->url not responding\n";
+		}
+
 	}
 }
 

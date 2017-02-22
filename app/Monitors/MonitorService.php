@@ -3,6 +3,6 @@
 
 abstract class MonitorService
 {
-	abstract protected function execute();
+	abstract public function execute();
 	
 }

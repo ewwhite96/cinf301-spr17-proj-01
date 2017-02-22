@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
-
+//require_once "./MonitorService.php"; 
 /*
  * Use Reflection to automatically instantiate objects and
  * invoke methods.
@@ -19,19 +19,13 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 // foreach ($connections as $connection) {
 
-class MonitorManager
+class MonitorManager 
 {
-	private $xml;
-	private $out;
-	function __construct($xml,$out)
-	{
-		$this->xml = $xml;
-		$this->out = $out;
-	}
 
 	private function __run()
 	{
-		$file = simplexml_load_file("./" + $xml);
+		//echo "I got here";
+		$file = simplexml_load_file("/../project/smiple.xml");
 		$classes = array();
 		foreach($file->services->services as $service)
 		{
@@ -61,7 +55,7 @@ class MonitorManager
 				}
 			}
 		}
-		 while(True)
+		while(True)
 		{
 			$pid = pcntl_fork();
 			if(($pid == 0))
