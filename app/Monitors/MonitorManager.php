@@ -35,14 +35,15 @@ class MonitorManager
 		$classes = array();
 		foreach($file->services->services as $service)
 		{
-			$class = "$service->class";
+			$class = $service->class;
+			$class2 = "$class";
 			$name = $service->name;
 			$frequency = $service->parameters->frequency;
 			$interval = $service->parameters->interval;
-			if($class == "PortMonitorService")
+			if($class22 == "PortMonitorService")
 			{
 				$port = $service->parameters->port; 
-				$serviceRef = new ReflectionClass($class);
+				$serviceRef = new ReflectionClass($class2);
 				if($serveiceRef->isInstantiable())
 				{
 					$serve = $serviceRef->newInstance($name,$port,$frequency,$interval); 
@@ -52,7 +53,7 @@ class MonitorManager
 			else
 			{
 				$link = $service->parameters->link;
-				$serviceRef = new ReflectionClass($class);
+				$serviceRef = new ReflectionClass($class2);
 				if($serviceRef->isInstantiable())
 				{
 					$serve = $serviceRef->newInstance($name,$link,$frequency,$interval);
@@ -62,10 +63,15 @@ class MonitorManager
 		}
 		 while(True)
 		{
-			foreach($classes as $instance)
+			$pid = pcntl_fork();
+			if(($pid == 0))
 			{
-                                $instance->execute();
-                        }
+				exit(execute());
+			}
+			else
+			{
+				$children[] = $pid;
+			}
 		} 
 	}
 }
