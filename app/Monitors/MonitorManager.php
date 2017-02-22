@@ -23,12 +23,12 @@ class MonitorManager
 {
 	private $xml;
 	private $out;
-	function __contsrtuct($xml,$out)
+	function __construct($xml,$out)
 	{
 		$this->xml = $xml;
 		$this->out = $out;
 	}
-	
+
 	private function __run()
 	{
 		$file = simplexml_load_file("./" + $xml);
@@ -45,9 +45,27 @@ class MonitorManager
 				$serviceRef = new ReflectionClass($class);
 				if($serveiceRef->isInstantiable())
 				{
-					$serve = $serviceRef->
+					$serve = $serviceRef->newInstance($name,$port,$frequency,$interval); 
+					$classes[] = $serve;
 				} 
 			}
+			else
+			{
+				$link = $service->parameters->link;
+				$serviceRef = new ReflectionClass($class);
+				if($serviceRef->isInstantiable())
+				{
+					$serve = $serviceRef->newInstance($name,$link,$frequency,$interval);
+					$classes[] = $serve;
+				}
+			}
+		}
+		 while(True)
+		{
+			foreach($classes as $instance)
+			{
+                                $instance->execute();
+                        }
 		} 
 	}
 }
