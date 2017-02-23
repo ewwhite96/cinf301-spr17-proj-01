@@ -1,0 +1,24 @@
+Very important note here, to get services to work (using systemd) within
+a Docker container, you must create the container somewhat like follows:
+
+docker run -d --privileged -v "$PWD":/var/www/html --name=centosphp_systemd centosphpimage
+
+Note the --privileged  portion of the command above. This is required for systemd to
+run in the container.  Also note that in the link below:
+
+https://github.com/docker/docker/issues/7459
+
+mention is made to requiring -e "container=docker" for systemd to run services.
+However, that is included in the Dockerfile using the ENV command, so is not
+required on the command line.
+
+The Dockerfile that is provided doesnt work properly. For some strange reason
+it wont run the "RUN composer require monolog/monolog" or 
+"RUN apt-get install php7.0-xml". I even tried putting "yum -y install" infront
+of both of them but it made no difference. Both these commands will need to be ran 
+from inside the project directory.
+
+I was also unable to get my MonitorManager.php to run correctly as you will see if 
+you run Monitors.php . I never got to the point where I could implement logger into
+the MonitorManager or use signals in either PortMonitorService or WebMonitorService.
+

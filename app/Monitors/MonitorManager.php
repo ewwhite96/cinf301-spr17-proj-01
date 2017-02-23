@@ -1,31 +1,29 @@
 <?php
-require_once __DIR__ . '/../../vendor/autoload.php';
-//require_once "./MonitorService.php"; 
+require_once '/root/project/vendor/autoload.php'; 
+require_once '/root/project/app/Monitors/PortMonitorService.php';
+require_once '/root/project/app/Monitors/WebMonitorService.php';
+
+
 /*
- * Use Reflection to automatically instantiate objects and
+ * The class MonitorManager uses Reflection to automatically instantiate objects and
  * invoke methods.
- *
- * NOTE: Can we log our results to a file?
  */
-
-/*
- * Note that while the XML file automatically escapes the backslash
- * in the file, but when using an array (like below), you must do so
- * yourself.  That's why the code didn't work in class!
- */
-// $connections = array("App\\framework\\db\\Connection",
-//     "App\\framework\\network\\Connection",
-//     "App\\Models\\SocialNetwork\\Connection");
-
-// foreach ($connections as $connection) {
-
 class MonitorManager 
 {
-
-	private function __run()
+	private $pt;
+	private $url;
+	//This __construct function is used to create objects of the 
+	//PortMonitorService and WebMonitorServices
+	function __construct($pt,$url)
 	{
-		//echo "I got here";
-		$file = simplexml_load_file("/../project/smiple.xml");
+		$pt = new PortMonitorService();
+		$url = new WebMonitorService();
+	}
+	//This __run function takes in a xml file and parses througb it to
+	//create children based on hhow many parts/web links there are.
+	public function __run()
+	{
+		$file = simplexml_load_file("/root/project/smiple.xml");
 		$classes = array();
 		foreach($file->services->services as $service)
 		{
@@ -34,7 +32,7 @@ class MonitorManager
 			$name = $service->name;
 			$frequency = $service->parameters->frequency;
 			$interval = $service->parameters->interval;
-			if($class22 == "PortMonitorService")
+			if($class2 == "PortMonitorService")
 			{
 				$port = $service->parameters->port; 
 				$serviceRef = new ReflectionClass($class2);
@@ -57,16 +55,38 @@ class MonitorManager
 		}
 		while(True)
 		{
-			$pid = pcntl_fork();
-			if(($pid == 0))
+			$children = array();
+
+			if($class2 == "PortMonitorService")
 			{
-				exit(execute());
+				for($i = 0; $i < $port; $i++)
+				{
+					$pid = pcntl_fork();
+					if(($pid == 0))
+					{
+						exit($pt->execute());
+					}
+					else
+					{
+						$children[] = $pid;
+					}
+				}
 			}
 			else
 			{
-				$children[] = $pid;
-			}
+				for($i = 0; $i < $link; $i++)
+				{
+					$pid = pcntl_fork();
+					if(($pid == 0))
+					{
+						exit($url->execute());
+					}
+					else
+					{
+						$children[] = $pid;
+					}
+				}
+			}	
 		} 
 	}
 }
-
